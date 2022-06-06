@@ -8,7 +8,7 @@ import FormControl from "@mui/material/FormControl";
 import GoodProfitIcon from "@mui/icons-material/Mood";
 import BadProfitIcon from "@mui/icons-material/MoodBad";
 import NormalProfitIcon from "@mui/icons-material/SentimentSatisfied";
-import EqualizerIcon from "@mui/icons-material/Equalizer";
+import DeleteIcon from "@mui/icons-material/Close";
 import { calcPercent } from "../utils";
 import { Layout } from "../components/Layout";
 import { Container, D11, D12, P } from "../components/MyHTML";
@@ -23,6 +23,9 @@ import Slider from "@mui/material/Slider";
 import ListItem from "@mui/material/ListItem";
 import List from "@mui/material/List";
 import Divider from "@mui/material/Divider";
+import { Selectbox, Option } from "../components/Selectbox";
+import IconButton from "@mui/material/IconButton";
+import { MultiSelectbox } from "../components/MultiSelectbox";
 
 // import { getTaxiServices } from "../reducers/taxiServices";
 // import { getSettings } from "../reducers/settings";
@@ -62,12 +65,29 @@ const useStyles = makeStyles((theme: any) => ({
   },
 }));
 
-const Earn = () => {
+type State = {
+  init: false;
+  timestamp: Date;
+  money: null;
+  provider: string;
+  nightsQty: number;
+  peopleQty: number;
+  customerName: string;
+  nationality: string;
+  roomNumber: null;
+  roomBill: number;
+  roomBillCurrency: string;
+  restaurantBill: number;
+  restaurantBillCurrency: string;
+  rooms: Option[];
+};
+
+const Income = () => {
   const { t } = useTranslation();
   const classes = useStyles();
   const dispatch = useDispatch();
 
-  const initState = {
+  const initState: State = {
     init: false,
     timestamp: new Date(),
     money: null,
@@ -78,8 +98,122 @@ const Earn = () => {
     nationality: "",
     roomNumber: null,
     roomBill: 0,
+    roomBillCurrency: "usd",
     restaurantBill: 0,
+    restaurantBillCurrency: "usd",
+    rooms: [],
   };
+
+  const nightsMarks = [
+    {
+      value: 1,
+      label: "1",
+    },
+    {
+      value: 3,
+      label: "3",
+    },
+    {
+      value: 7,
+      label: "7",
+    },
+    {
+      value: 10,
+      label: "10",
+    },
+    {
+      value: 14,
+      label: "14",
+    },
+    {
+      value: 20,
+      label: "20",
+    },
+    {
+      value: 30,
+      label: "30+",
+    },
+  ];
+
+  const peopleMarks = [
+    {
+      value: 1,
+      label: "1",
+    },
+    {
+      value: 2,
+      label: "2",
+    },
+    {
+      value: 3,
+      label: "3",
+    },
+    {
+      value: 5,
+      label: "5",
+    },
+    {
+      value: 10,
+      label: "10+",
+    },
+  ];
+
+  const providersOptions: Option[] = [
+    {
+      label: "Booking",
+      value: "booking",
+    },
+    {
+      label: "Private",
+      value: "Provider",
+    },
+    {
+      label: "Friends",
+      value: "friends",
+    },
+  ];
+
+  const roomsOptions = [
+    { value: 1, label: "1 - Queen" },
+    { value: 2, label: "2 - King" },
+    { value: 3, label: "3 - Luxary Family Garden" },
+    { value: 4, label: "4 - Family Pool" },
+    { value: 5, label: "5 - Family Pool" },
+    { value: 6, label: "6 - Luxary Family Pool" },
+    { value: 7, label: "7 - Family Pool" },
+    { value: 8, label: "8 - Family Pool" },
+    { value: 9, label: "9 - Border View" },
+    { value: 10, label: "10 - Luxury Family Nest" },
+    { value: 11, label: "11 - African Bungalo" },
+    { value: 12, label: "12 - Economy Family" },
+    { value: 13, label: "13 - Economy Family" },
+    { value: 14, label: "14 - Economy Family Double" },
+    { value: 15, label: "15 - Economy Single" },
+  ];
+
+  const currencyOptions = [
+    {
+      value: "usd",
+      label: "USD",
+    },
+    {
+      value: "eur",
+      label: "EUR",
+    },
+    {
+      value: "tzh",
+      label: "TZH",
+    },
+  ];
+  const currencyMap: Record<string, number> = {};
+
+  const currencyMarks = currencyOptions.map((option, i) => {
+    currencyMap[option.value] = i + 1;
+    return {
+      label: option.label,
+      value: i + 1,
+    };
+  });
 
   const [state, setState] = useState(initState);
 
@@ -89,6 +223,17 @@ const Earn = () => {
     (key: K) =>
     ({ target: { value } }: any) =>
       setState({ ...state, [key]: value });
+
+  const setCurrency =
+    (key: K) =>
+    ({ target: { value } }: any) =>
+      setState({
+        ...state,
+        [key]: currencyOptions.find(
+          (co) =>
+            co.label === currencyMarks.find((c) => c.value === value)?.label
+        )?.value,
+      });
 
   const handleDate = (timestamp: Date) => setState({ ...state, timestamp });
 
@@ -108,6 +253,17 @@ const Earn = () => {
       end={end}
     />
   );
+
+  const setRooms = (rooms: Option[]) => {
+    console.log({ rooms });
+
+    setState({ ...state, rooms });
+  };
+
+  const removeRoom = (room: Option) => {
+    const rooms = state.rooms.filter((r) => r.value !== room.value);
+    setRooms(rooms);
+  };
 
   const save = () => {
     const { money, timestamp } = state;
@@ -142,26 +298,58 @@ const Earn = () => {
               />
             </D12>
             <D12 mt={1} className={classes.row}>
-              <FormControl fullWidth>
-                <InputLabel id="provider">Провайдер</InputLabel>
-                <Select
-                  labelId="provider"
-                  id="provider-select"
-                  value={state.provider}
-                  label="Provider"
-                  onChange={setData("provider")}
-                >
-                  <MenuItem value={"booking"}>Booking</MenuItem>
-                  <MenuItem value={"private"}>Private</MenuItem>
-                  <MenuItem value={"friends"}>Friends</MenuItem>
-                </Select>
-              </FormControl>
+              <Selectbox
+                label={t("provider")}
+                options={providersOptions}
+                value={state.provider}
+                onChange={setData("provider")}
+                formProps={{
+                  fullWidth: true,
+                }}
+              />
+            </D12>
+            <D12 className={classes.row}>
+              <List>
+                {state.rooms.map((room, i) => (
+                  <>
+                    {i > 0 && <Divider />}
+                    <ListItem
+                      key={room.label}
+                      secondaryAction={
+                        <IconButton
+                          onClick={() => removeRoom(room)}
+                          edge="end"
+                          aria-label="delete"
+                        >
+                          <DeleteIcon />
+                        </IconButton>
+                      }
+                    >
+                      <P variant="subtitle2" className={classes.label}>
+                        {room.label}
+                      </P>
+                    </ListItem>
+                  </>
+                ))}
+              </List>
+            </D12>
+            <D12 className={classes.row}>
+              <MultiSelectbox
+                label={t("room")}
+                placeholder={t("select-room")}
+                value={state.rooms.map((room) => room.label).join(", ")}
+                options={roomsOptions}
+                onSelect={setRooms}
+                formProps={{
+                  fullWidth: true,
+                }}
+              />
             </D12>
             <D12 className={classes.row}>
               {makeInput(
-                "Кол-во ночей",
                 "nightsQty",
-                "ночей",
+                "nightsQty",
+                "nights",
                 state.nightsQty,
                 true
               )}
@@ -169,6 +357,7 @@ const Earn = () => {
                 defaultValue={7}
                 min={1}
                 max={30}
+                marks={nightsMarks}
                 onChange={setData("nightsQty")}
                 value={state.nightsQty}
                 valueLabelDisplay="auto"
@@ -176,9 +365,9 @@ const Earn = () => {
             </D12>
             <D12 className={classes.row}>
               {makeInput(
-                "Кол-во людей",
                 "peopleQty",
-                "людей",
+                "peopleQty",
+                "people",
                 state.peopleQty,
                 true
               )}
@@ -186,63 +375,59 @@ const Earn = () => {
                 defaultValue={2}
                 min={1}
                 max={10}
+                marks={peopleMarks}
                 onChange={setData("peopleQty")}
                 value={state.peopleQty}
                 valueLabelDisplay="auto"
               />
             </D12>
             <D12 className={classes.row}>
-              <List>
-                <ListItem>
-                  <P variant="subtitle2" className={classes.label}>
-                    1 - Queen
-                  </P>
-                </ListItem>
-                <Divider />
-                <ListItem>
-                  <P variant="subtitle2" className={classes.label}>
-                    3 - Luxary Family Garden
-                  </P>
-                </ListItem>
-              </List>
-            </D12>
-            <D12 className={classes.row}>
-              <FormControl fullWidth>
-                <InputLabel id="provider">Комната</InputLabel>
-                <Select
-                  labelId="provider"
-                  id="provider-select"
-                  label="Provider"
-                  onChange={setData("provider")}
-                >
-                  <MenuItem value={1}>1 - Queen</MenuItem>
-                  <MenuItem value={2}>2 - King</MenuItem>
-                  <MenuItem value={3}>3 - Luxary Family Garden</MenuItem>
-                  <MenuItem value={4}>4 - Family Pool</MenuItem>
-                  <MenuItem value={5}>5 - Family Pool</MenuItem>
-                  <MenuItem value={6}>6 - Luxary Family Pool</MenuItem>
-                  <MenuItem value={7}>7 - Family Pool</MenuItem>
-                  <MenuItem value={8}>8 - Family Pool</MenuItem>
-                  <MenuItem value={9}>9 - Border View</MenuItem>
-                  <MenuItem value={1}>10 - Luxury Family Nest</MenuItem>
-                  <MenuItem value={1}>11 - African Bungalo</MenuItem>
-                  <MenuItem value={1}>12 - Economy Family</MenuItem>
-                  <MenuItem value={1}>13 - Economy Family</MenuItem>
-                  <MenuItem value={1}>14 - Economy Family Double</MenuItem>
-                  <MenuItem value={1}>15 - Economy Single</MenuItem>
-                </Select>
-              </FormControl>
-            </D12>
-            <D12 className={classes.row}>
-              {makeInput("Чек за комнату", "roomBill", "USD", state.roomBill)}
+              {makeInput(
+                "roomBill",
+                "roomBill",
+                <Selectbox
+                  options={currencyOptions}
+                  value={state.roomBillCurrency}
+                  onChange={setData("roomBillCurrency")}
+                  selectProps={{
+                    variant: "standard",
+                  }}
+                />,
+
+                state.roomBill
+              )}
+              <Slider
+                min={Math.min(...currencyMarks.map((m) => m.value))}
+                max={Math.max(...currencyMarks.map((m) => m.value))}
+                marks={currencyMarks}
+                onChange={setCurrency("roomBillCurrency")}
+                value={currencyMap[state.roomBillCurrency]}
+                valueLabelDisplay="auto"
+              />
             </D12>
             <D12 className={classes.row}>
               {makeInput(
-                "Чек за ресторан",
                 "restaurantBill",
-                "USD",
+                "restaurantBill",
+                <Selectbox
+                  options={currencyOptions}
+                  value={state.restaurantBillCurrency}
+                  onChange={setData("restaurantBillCurrency")}
+                  selectProps={{
+                    variant: "standard",
+                  }}
+                />,
+
                 state.restaurantBill
               )}
+              <Slider
+                min={Math.min(...currencyMarks.map((m) => m.value))}
+                max={Math.max(...currencyMarks.map((m) => m.value))}
+                marks={currencyMarks}
+                onChange={setCurrency("restaurantBillCurrency")}
+                value={currencyMap[state.restaurantBillCurrency]}
+                valueLabelDisplay="auto"
+              />
             </D12>
           </Container>
         </div>
@@ -275,4 +460,4 @@ const Earn = () => {
   );
 };
 
-export default Earn;
+export default Income;
