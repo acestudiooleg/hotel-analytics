@@ -1,14 +1,16 @@
 import { AnyAction } from "@reduxjs/toolkit";
 import { push } from "connected-react-router";
 
-export const router = {
+export const routes = {
   root: "/",
   settings: "/settings",
   balance: "/balance",
   statistics: "/statistics",
-  income: "/income",
+  incomeRoom: "/income-room",
+  incomeExcursion: "/income-excursion",
   spend: "/spend",
-  editRide: "/edit-ride",
+  editRoomIncome: "/edit-room-income",
+  editExcursionIncome: '/edit-excursion-income'
 };
 
 export const makeGoTo =
@@ -16,8 +18,9 @@ export const makeGoTo =
   (dispatch: (action: AnyAction) => void) =>
     dispatch(push(path) as any);
 
-export const goToBalance = makeGoTo(router.balance);
-export const goToSettings = makeGoTo(router.settings);
-export const goToStatistics = makeGoTo(router.statistics);
-export const goToIncome = makeGoTo(router.income);
-export const goToSpend = makeGoTo(router.spend);
+export const goToBalance = makeGoTo(routes.balance);
+export const goToSettings = makeGoTo(routes.settings);
+export const goToStatistics = makeGoTo(routes.statistics);
+export const goToIncomeRoom = makeGoTo(routes.incomeRoom);
+export const goToIncomeExcursion = makeGoTo(routes.incomeExcursion);
+export const goToSpend = makeGoTo(routes.spend);

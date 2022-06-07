@@ -60,7 +60,7 @@ export const ProviderSettingsForm: FC<ProviderSettingsFormProps> = ({
       {provider.isNew && (
         <D12>
           <Input
-            label={t("service-name")}
+            label={t("provider-name")}
             defaultValue={provider.newName}
             className={classes.input}
             onChange={handleInputChange("newName", "string")}

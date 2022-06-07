@@ -18,8 +18,8 @@ export const SettingsPage = () => {
 
   const steps = [
     {
-      name: "services",
-      label: t("taxi-services-label"),
+      name: "providers",
+      label: t("providers-label"),
       component: Providers,
       icon: TaxiServicesIcon,
     },

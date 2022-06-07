@@ -12,7 +12,7 @@ import ProfitIcon from "@mui/icons-material/ShowChart";
 import DistanceIcon from "@mui/icons-material/Navigation";
 import Divider from "@mui/material/Divider";
 
-import { makeGoTo, router } from "../router";
+import { makeGoTo, routes } from "../router";
 
 import { Text } from "./Text";
 import { makeDayLine } from "./DateLine";
@@ -58,7 +58,7 @@ export const IncomeList: FC<IncomeListProps> = ({ incomeList, currency }) => {
   const dispatch = useDispatch();
 
   const editRide = (id?: string) => () =>
-    makeGoTo(`${router.editRide}/${id}`)(dispatch);
+    makeGoTo(`${routes.editRoomIncome}/${id}`)(dispatch);
 
   return (
     <List

@@ -8,7 +8,7 @@ import StatIcon from "@mui/icons-material/ShowChart";
 import DirectionsCarIcon from "@mui/icons-material/DirectionsCar";
 import SettingsIcon from "@mui/icons-material/Settings";
 
-import { router } from "../router";
+import { routes } from "../router";
 
 const useStyles = makeStyles((theme: any) => ({
   root: {
@@ -51,17 +51,17 @@ export const BottomNav: FC<BottomNavProps> = ({
         >
           <BottomNavigationAction
             label={t("statistics")}
-            value={router.statistics}
+            value={routes.statistics}
             icon={<StatIcon />}
           />
           <BottomNavigationAction
             label={t("balance")}
-            value={router.balance}
+            value={routes.balance}
             icon={<DirectionsCarIcon />}
           />
           <BottomNavigationAction
             label={t("settings")}
-            value={router.settings}
+            value={routes.settings}
             icon={<SettingsIcon />}
           />
         </BottomNavigation>

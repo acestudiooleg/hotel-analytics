@@ -22,7 +22,7 @@ import { actions as expensesActions } from "../slices/expenses";
 
 import { Container, D12, D11 } from "../components/MyHTML";
 
-import { router } from "../router";
+import { routes } from "../router";
 
 const useStyles = makeStyles((theme: any) => ({
   content: {
@@ -159,7 +159,7 @@ export const Spend = () => {
             <D11>
               <Button
                 fullWidth
-                onClick={goto(router.balance)}
+                onClick={goto(routes.balance)}
                 color="secondary"
                 variant="contained"
               >

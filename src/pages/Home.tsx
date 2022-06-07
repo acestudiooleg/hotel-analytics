@@ -20,7 +20,7 @@ import RedButton from "../components/RedButton";
 
 // import { getBalance } from "../selectors/balance";
 
-import { goToIncome, goToSpend, goToStatistics, goToSettings } from "../router";
+import { goToIncomeRoom, goToSpend, goToStatistics, goToSettings } from "../router";
 
 import { Container, D11, D7, D4 } from "../components/MyHTML";
 import TextField from "@mui/material/TextField";
@@ -97,7 +97,7 @@ export const Home = () => {
               <D11>
                 <Button
                   fullWidth
-                  onClick={() => goToIncome(dispatch)}
+                  onClick={() => goToIncomeRoom(dispatch)}
                   variant="contained"
                   color="primary"
                 >

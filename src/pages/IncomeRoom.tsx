@@ -82,7 +82,7 @@ type State = {
   rooms: Option[];
 };
 
-const Income = () => {
+export const IncomeRoom = () => {
   const { t } = useTranslation();
   const classes = useStyles();
   const dispatch = useDispatch();
@@ -459,5 +459,3 @@ const Income = () => {
     </Layout>
   );
 };
-
-export default Income;

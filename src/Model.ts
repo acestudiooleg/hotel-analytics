@@ -20,11 +20,11 @@ export default class Model<T extends Record<string, any>> {
     }
   }
 
-  createRecord<T extends Record<string, any>>(data: T | T[]): Promise<T[]> {
+  create<T extends Record<string, any>>(data: T | T[]): Promise<T[]> {
     if (data instanceof Array) {
       data.forEach((el) => this.db.insert(this.name, el));
       this.db.commit();
-      return this.readRecord<T>({
+      return this.read<T>({
         query: (r) =>
           data.some((d) => Object.keys((key: keyof T) => d[key] === r[key])),
       });
@@ -33,33 +33,33 @@ export default class Model<T extends Record<string, any>> {
 
     this.db.commit();
 
-    return this.readRecord<any>({
+    return this.read<any>({
       query: data,
     });
   }
 
-  updateRecord<T extends Record<string, any>>(data: TId<T>) {
+  update<T extends Record<string, any>>(data: TId<T>) {
     if (data instanceof Array) {
       data.forEach((el) => this.db.update(this.name, { ID: el.ID }, () => el));
       this.db.commit();
-      return this.readRecord<T>({
+      return this.read<T>({
         query: (r) => data.some((d) => d.ID === r.ID),
       });
     }
     this.db.update(this.name, { ID: data.ID }, () => data);
     this.db.commit();
-    return this.readRecord({
+    return this.read({
       query: {
         ID: data.ID,
       },
     });
   }
 
-  readRecord<T extends Record<string, any>>(params: Q<T>) {
+  read<T extends Record<string, any>>(params?: Q<T>) {
     return Promise.resolve(this.db.queryAll<T>(this.name, params));
   }
 
-  deleteRecord<T extends Record<string, any>>(data: TId<T>) {
+  delete<T extends Record<string, any>>(data: TId<T>) {
     if (data instanceof Array) {
       data.forEach((el) => this.db.deleteRows(this.name, el));
     } else {

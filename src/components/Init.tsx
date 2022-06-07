@@ -8,6 +8,7 @@ import { InitNavButtons } from "./InitNavButtons";
 
 const useStyles = makeStyles(() => ({
   stepComponent: {
+    marginTop: '1rem',
     width: "100%",
     overflow: "auto",
     height: "calc(100vh - 221px)",
@@ -31,7 +32,7 @@ export const Init: FC<InitProps> = ({ activeStep, steps, onNext, onBack }) => {
   const CurrentStepComponent = steps[activeStep].component;
 
   return (
-    <Container>
+    <Container mt={2}>
       <D12>
         <InitSteps steps={steps} activeStep={activeStep} />
       </D12>

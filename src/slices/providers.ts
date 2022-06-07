@@ -1,6 +1,7 @@
-import { AnyAction, createSlice } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 
 import { RootState } from "../store";
+import { Action, makeTypes } from "./types";
 
 export type Provider = {
   ID?: string;
@@ -24,7 +25,10 @@ const initialState: ProvidersState = {
   error: null,
 };
 
-const saveDate = (state: ProvidersState, { payload: list }: AnyAction) => {
+const saveData = (
+  state: ProvidersState,
+  { payload: list }: Action<Provider[]>
+) => {
   state.list = list;
   state.loading = false;
   state.hasData = true;
@@ -39,9 +43,10 @@ export const providersSlice = createSlice({
     },
     add: (state, { payload: provider }) => {},
     remove: (state, { payload: provider }) => {},
-    addSuccess: saveDate,
-    saveSuccess: saveDate,
-    initSuccess: saveDate,
+    addSuccess: saveData,
+    saveSuccess: saveData,
+    removeSuccess: saveData,
+    initSuccess: saveData,
     saveFailure: (state, action) => {
       state.loading = false;
       state.error = action.payload;
@@ -50,9 +55,11 @@ export const providersSlice = createSlice({
   },
 });
 
-export const { actions } = providersSlice;
+export const { actions, name } = providersSlice;
 export const { addSuccess, initSuccess, save, saveFailure, saveSuccess } =
   providersSlice.actions;
+  
+export const types = makeTypes<keyof typeof actions>(name, actions)
 
 export default providersSlice.reducer;
 

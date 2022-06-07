@@ -69,29 +69,29 @@ export const Providers = () => {
     (panel: string) => (event: any, isExpanded: boolean) =>
       setExpanded(isExpanded ? panel : "");
 
-  const addService = () => {
-    const newServices = [
+  const addProvider = () => {
+    const newProviders = [
       ...providersState,
       {
         isNew: true,
-        name: t("new-service-name"),
+        name: t("new-provider-name"),
         newName: "",
         fee: 0,
       },
     ];
-    setServices(newServices);
-    setExpanded(`${t("new-service-name")}New`);
+    setServices(newProviders);
+    setExpanded(`${t("new-provider-name")}New`);
   };
 
-  const saveService = () => {
-    const newService = providersState.find((el) => el.isNew);
+  const saveProvider = () => {
+    const newProvider = providersState.find((el) => el.isNew);
 
-    if (newService) {
-      if (!newService.newName) {
-        return window.alert(t("service-name-validation-error"));
+    if (newProvider) {
+      if (!newProvider.newName) {
+        return window.alert(t("provider-name-validation-error"));
       }
-      newService.name = newService.newName;
-      dispatch(actions.add(omit(newService, ["isNew", "newName"])));
+      newProvider.name = newProvider.newName;
+      dispatch(actions.add(omit(newProvider, ["isNew", "newName"])));
     }
     return setExpanded("");
   };
@@ -114,8 +114,8 @@ export const Providers = () => {
   return (
     <>
       <D12>
-        <H5 align="center">{t("taxi-services-title")}</H5>
-        <P align="center">{t("taxi-services-desc")}</P>
+        <H5 align="center">{t("providers-title")}</H5>
+        <P align="center">{t("providers-desc")}</P>
       </D12>
       <D12>
         {providersState.map((el) => (
@@ -132,7 +132,7 @@ export const Providers = () => {
                 provider={el}
                 onChange={handleService(el.name)}
                 onRemove={removeService(el)}
-                onSave={saveService}
+                onSave={saveProvider}
               />
             </AccordionDetails>
           </Accordion>
@@ -140,7 +140,7 @@ export const Providers = () => {
       </D12>
       {showAddButton && (
         <Container justifyContent="flex-end">
-          <Fab onClick={addService} className={classes.fab} color="primary">
+          <Fab onClick={addProvider} className={classes.fab} color="primary">
             <Add />
           </Fab>
         </Container>
